@@ -1,0 +1,25 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - main
+      - 'prerelease-**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ShellCheck
+        run: shellcheck --severity=warning ./*.sh
+
+      - name: Slack notify on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v2
+        with:
+          webhook: ${{ secrets.SITE_DEPLOYMENTS_SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "${{ github.repository }}:${{ github.ref_name }} Lint workflow failed"

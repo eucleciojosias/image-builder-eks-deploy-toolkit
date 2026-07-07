@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -e
+
+# shellcheck disable=SC2069
+# shellcheck disable=SC2027
+
+logger_check_line() {
+  line=$1
+  echo "$line"
+
+  if [[ "$line" == *"Deployment is not ready"* ]]; then
+    touch /tmp/pod-output.log
+    kubectl logs -l "app.kubernetes.io/instance=$RELEASE_NAME" \
+      --all-containers=true \
+      --namespace "$NAMESPACE" \
+      --tail="$LOG_TAIL_LINES" 2>&1 > /tmp/pod-output.log || true
+  fi
+}
+
+logger_print() {
+  helm_output=$(cat "$HELM_OUTPUT_FILE")
+
+  # Print error when container fails to start
+  status_check_error="Error received when checking status of resource ${RELEASE_NAME}-${CHART##*/}."
+  if [[ "$helm_output" == *"$status_check_error"* ]]; then
+    cp /tmp/pod-output.log $POD_OUTPUT_LOG_FILE
+    echo "=============================================="
+    echo "Detected container startup failure. Check the container logs:"
+    echo "=============================================="
+    cat "$POD_OUTPUT_LOG_FILE"
+    echo "=============================================="
+  fi
+}

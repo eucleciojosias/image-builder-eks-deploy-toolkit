@@ -1,0 +1,20 @@
+{
+  "rules": [
+    {
+      "rulePriority": 2,
+      "description": "Remove images from preview apps",
+      "selection": {
+        "countType": "sinceImagePushed",
+        "countUnit": "days",
+        "countNumber": 10,
+        "tagStatus": "tagged",
+        "tagPrefixList": [
+          "preview-"
+        ]
+      },
+      "action": {
+        "type": "expire"
+      }
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+README.md
+.gitignore
+.github/
+dist/
+cleanup-preview-apps.sh
