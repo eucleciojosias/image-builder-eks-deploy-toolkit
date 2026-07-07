@@ -17,7 +17,8 @@ CLUSTER_NAME=${CLUSTER_NAME:?'CLUSTER_NAME environment variable missing.'}
 # shellcheck source=./shared-funcs.sh
 source "${ROOT_PATH}shared-funcs.sh"
 
-set_release_name
+export RELEASE_NAME="${GITHUB_REPOSITORY##*/}-${GITHUB_REF_NAME}"
+
 set_app_domain
 set_kube_config
 print_deploy_info

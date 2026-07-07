@@ -5,24 +5,8 @@ set_kube_config() {
 }
 
 set_app_domain() {
-  local sub_domain
-  sub_domain=$(echo "${DEPLOYMENT_ENVIRONMENT,,}") # lowercase
-  if [[ "$sub_domain" == "production" ]]; then sub_domain="prod"; fi
-
-  APP_DOMAIN=${APP_DOMAIN:-"${GITHUB_REPOSITORY##*/}.${sub_domain}.${BASE_DOMAIN}"}
+  APP_DOMAIN=${APP_DOMAIN:-"${GITHUB_REPOSITORY##*/}.${DEPLOYMENT_ENVIRONMENT}.${BASE_DOMAIN}"}
   export APP_DOMAIN
-}
-
-set_release_name() {
-  local suffix
-  case "$GITHUB_REF_NAME" in
-    master|main|staging|develop|test|redesign) suffix="${GITHUB_REF_NAME}" ;;
-    *) suffix="staging" ;;
-  esac
-
-  RELEASE_NAME="${GITHUB_REPOSITORY##*/}-${suffix}"
-
-  export RELEASE_NAME
 }
 
 print_deploy_info() {
