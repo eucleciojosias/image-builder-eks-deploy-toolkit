@@ -29,9 +29,20 @@ GitHub Actions workflow to build and publish the image and to clean up preview a
 | `APP_DOMAIN`             | App domain. Default: `<repo>.<environment>.<BASE_DOMAIN>`.           |
 | `AWS_ACCOUNT_ID`         | AWS account that hosts the private ECR image repository.             |
 
+## Tests
+
+Tests use [bash_unit](https://github.com/pgrange/bash_unit) with fakes for the `helm`, `aws`
+and `kubectl` commands (`tests/stub/`), asserting the exact parameters each command receives:
+
+```sh
+curl -s https://raw.githubusercontent.com/pgrange/bash_unit/master/install.sh | bash
+./bash_unit tests/test-*
+```
+
 ## Workflows
 
-- **Lint** (`.github/workflows/lint.yml`): runs ShellCheck on every push.
+- **Lint & Test** (`.github/workflows/lint.yml`): runs ShellCheck and the bash_unit tests on
+  every push.
 - **Build and Push** (`.github/workflows/build-push.yml`): builds the Docker image and pushes
   it to Amazon ECR Public when the image inputs change. Uses OIDC (`AWS_ROLE_ARN` secret).
 - **Cleanup Preview Apps** (`.github/workflows/cleanup-preview-apps.yml`): manually triggered;

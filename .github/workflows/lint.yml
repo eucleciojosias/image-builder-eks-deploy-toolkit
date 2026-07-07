@@ -1,4 +1,4 @@
-name: Lint
+name: Lint & Test
 
 on:
   push:
@@ -7,13 +7,19 @@ on:
       - 'prerelease-**'
 
 jobs:
-  lint:
+  lint-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: ShellCheck
         run: shellcheck --severity=warning ./*.sh
+
+      - name: Install bash_unit
+        run: curl -s https://raw.githubusercontent.com/pgrange/bash_unit/master/install.sh | bash
+
+      - name: bash_unit tests
+        run: FORCE_COLOR=true ./bash_unit tests/test-*
 
       - name: Slack notify on failure
         if: failure()
@@ -22,4 +28,4 @@ jobs:
           webhook: ${{ secrets.SITE_DEPLOYMENTS_SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "${{ github.repository }}:${{ github.ref_name }} Lint workflow failed"
+            text: "${{ github.repository }}:${{ github.ref_name }} Lint & Test workflow failed"
