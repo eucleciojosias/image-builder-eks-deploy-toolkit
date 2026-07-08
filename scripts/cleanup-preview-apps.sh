@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-export ROOT_PATH=${ROOT_PATH:-"./"}
+export ROOT_PATH=${ROOT_PATH:-"./scripts/"}
+export POLICIES_PATH=${POLICIES_PATH:-"./policies/"}
 
 NAMESPACE=${NAMESPACE:?'NAMESPACE environment variable missing.'}
 
@@ -29,7 +30,7 @@ assure_ecr_lifecycle_policy() {
   check_policy=$(aws ecr get-lifecycle-policy --repository-name "$repo_slug" 2> /dev/null)
   if [[ -z "$check_policy" ]]
   then
-    policy=$(cat ./preview-apps-ecr-lifecycle-policy.json)
+    policy=$(cat "${POLICIES_PATH}preview-apps-ecr-lifecycle-policy.json")
     aws ecr put-lifecycle-policy --repository-name "$repo_slug" --lifecycle-policy-text "$policy"
 
     expire_days=$(echo "$policy" | jq -r '.rules[0].selection.countNumber')

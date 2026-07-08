@@ -2,4 +2,6 @@ README.md
 .gitignore
 .github/
 dist/
-cleanup-preview-apps.sh
+policies/
+tests/
+scripts/cleanup-preview-apps.sh

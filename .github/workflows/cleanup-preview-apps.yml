@@ -26,4 +26,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NAMESPACE: ${{ vars.NAMESPACE }}
-        run: ./cleanup-preview-apps.sh
+        run: ./scripts/cleanup-preview-apps.sh

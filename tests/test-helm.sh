@@ -7,7 +7,7 @@ setup_suite() {
   source ./stub/kubectl.sh
   source ./utils.sh
 
-  export ROOT_PATH="../"
+  export ROOT_PATH="../scripts/"
 }
 
 setup() {
@@ -37,12 +37,12 @@ setup() {
 }
 
 test_helm_missing_required_envvars() {
-  assert_matches "HELM_REPO environment variable missing" "$(unset HELM_REPO; "../helm.sh" 2>&1)"
-  assert_matches "HELM_REPO_URL environment variable missing" "$(unset HELM_REPO_URL; "../helm.sh" 2>&1)"
-  assert_matches "CHART environment variable missing" "$(unset CHART; "../helm.sh" 2>&1)"
-  assert_matches "NAMESPACE environment variable missing" "$(unset NAMESPACE; "../helm.sh" 2>&1)"
-  assert_matches "AWS_REGION environment variable missing" "$(unset AWS_REGION; "../helm.sh" 2>&1)"
-  assert_matches "CLUSTER_NAME environment variable missing" "$(unset CLUSTER_NAME; "../helm.sh" 2>&1)"
+  assert_matches "HELM_REPO environment variable missing" "$(unset HELM_REPO; "../scripts/helm.sh" 2>&1)"
+  assert_matches "HELM_REPO_URL environment variable missing" "$(unset HELM_REPO_URL; "../scripts/helm.sh" 2>&1)"
+  assert_matches "CHART environment variable missing" "$(unset CHART; "../scripts/helm.sh" 2>&1)"
+  assert_matches "NAMESPACE environment variable missing" "$(unset NAMESPACE; "../scripts/helm.sh" 2>&1)"
+  assert_matches "AWS_REGION environment variable missing" "$(unset AWS_REGION; "../scripts/helm.sh" 2>&1)"
+  assert_matches "CLUSTER_NAME environment variable missing" "$(unset CLUSTER_NAME; "../scripts/helm.sh" 2>&1)"
 }
 
 assert_aws_eks_params() {
@@ -66,7 +66,7 @@ assert_helm_repo_params() {
 }
 
 test_helm_deploy() {
-  "../helm.sh" > /dev/null
+  "../scripts/helm.sh" > /dev/null
 
   assert_aws_eks_params
   assert_helm_repo_params
@@ -103,7 +103,7 @@ test_helm_deploy_with_custom_values_files() {
   echo "replicas: 2" > chart/values.yaml
   echo "replicas: 1" > chart/values-staging.yaml
 
-  "../helm.sh" > /dev/null
+  "../scripts/helm.sh" > /dev/null
 
   set_last_call_to_helm_params
   assert_equals "upgrade" "$(get_helm_param 0)"
@@ -119,7 +119,7 @@ test_helm_deploy_skips_values_file_of_other_environment() {
   mkdir -p chart
   echo "replicas: 2" > chart/values-production.yaml
 
-  "../helm.sh" > /dev/null
+  "../scripts/helm.sh" > /dev/null
 
   set_last_call_to_helm_params
   assert_equals "upgrade" "$(get_helm_param 0)"
@@ -132,7 +132,7 @@ test_helm_deploy_skips_values_file_of_other_environment() {
 test_helm_deploy_with_custom_app_domain() {
   export APP_DOMAIN="custom.domain.com"
 
-  "../helm.sh" > /dev/null
+  "../scripts/helm.sh" > /dev/null
 
   set_last_call_to_helm_params
   assert_equals "--set siteDomain=custom.domain.com" "$(join_helm_params 17 18)"
@@ -141,7 +141,7 @@ test_helm_deploy_with_custom_app_domain() {
 test_helm_deploy_fails_when_release_is_not_deployed() {
   export HELM_FAKE_UPGRADE_FAIL="1"
 
-  assert_fails "'../helm.sh' > /dev/null 2>&1"
+  assert_fails "'../scripts/helm.sh' > /dev/null 2>&1"
 
   set_last_call_to_helm_params
   assert_equals "upgrade" "$(get_helm_param 0)"
