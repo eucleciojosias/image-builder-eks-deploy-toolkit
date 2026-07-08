@@ -9,15 +9,12 @@ set_app_domain() {
   export APP_DOMAIN
 }
 
-print_deploy_info() {
-  echo "HELM_REPO: $HELM_REPO"
-  echo "HELM_REPO_URL: $HELM_REPO_URL"
-  echo "CHART: $CHART"
-  echo "NAMESPACE: $NAMESPACE"
-  echo "APP_DOMAIN: $APP_DOMAIN"
-  echo "RELEASE_NAME: $RELEASE_NAME"
-  echo "CLUSTER: $(kubectl config current-context)"
-  echo "SERVER: $(kubectl config view --minify -o jsonpath='{.clusters[].cluster.server}')"
+group_start() {
+  echo "::group::$1"
+}
+
+group_end() {
+  echo "::endgroup::"
 }
 
 get_value_files_list() {
@@ -35,7 +32,7 @@ get_value_files_list() {
   echo "$value_files_list"
 }
 
-generate_helm_cmd() {
+gen_helm_cmd() {
   action=${1:-"template"}
   helm_cmd="helm ${action} ${RELEASE_NAME} ${CHART}"
 

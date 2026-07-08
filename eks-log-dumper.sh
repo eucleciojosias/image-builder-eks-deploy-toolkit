@@ -24,10 +24,9 @@ logger_print() {
   status_check_error="Error received when checking status of resource ${RELEASE_NAME}-${CHART##*/}."
   if [[ "$helm_output" == *"$status_check_error"* ]]; then
     cp /tmp/pod-output.log $POD_OUTPUT_LOG_FILE
-    echo "=============================================="
+    group_start "--- 🐛 Container Startup Failure Logs ---"
     echo "Detected container startup failure. Check the container logs:"
-    echo "=============================================="
     cat "$POD_OUTPUT_LOG_FILE"
-    echo "=============================================="
+    group_end
   fi
 }

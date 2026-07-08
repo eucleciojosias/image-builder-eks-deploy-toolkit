@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 
-namespace=websites
+export ROOT_PATH=${ROOT_PATH:-"./"}
+
+NAMESPACE=${NAMESPACE:?'NAMESPACE environment variable missing.'}
+
+# shellcheck source=./shared-funcs.sh
+source "${ROOT_PATH}shared-funcs.sh"
+
 host=https://api.github.com
 owner="${GITHUB_REPOSITORY_OWNER}"
-preview_apps=$(helm list -n "$namespace" --short --filter '-pr-')
+preview_apps=$(helm list -n "$NAMESPACE" --short --filter '-pr-')
 
 get_pr_data() {
   repo_slug=$1
@@ -39,7 +45,7 @@ for release_name in $preview_apps; do
   pr_state=$(echo "$pr_data" | jq -r .state)
   pr_branch=$(echo "$pr_data" | jq -r .head.ref)
 
-  echo "===================================="
+  group_start "--- 🧹 Cleaning up $release_name ---"
   echo "HELM RELEASE: $release_name"
   echo "REPO SLUG: $repo_slug"
   echo "PR BRANCH: $pr_branch"
@@ -51,6 +57,7 @@ for release_name in $preview_apps; do
 
     assure_ecr_lifecycle_policy "$repo_slug"
 
-    helm uninstall "$release_name" --wait --namespace "$namespace"
+    helm uninstall "$release_name" --wait --namespace "$NAMESPACE"
   fi
+  group_end
 done

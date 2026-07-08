@@ -21,7 +21,15 @@ export RELEASE_NAME="${GITHUB_REPOSITORY##*/}-${GITHUB_REF_NAME}"
 
 set_app_domain
 set_kube_config
-print_deploy_info
+
+echo "HELM_REPO: $HELM_REPO"
+echo "HELM_REPO_URL: $HELM_REPO_URL"
+echo "CHART: $CHART"
+echo "NAMESPACE: $NAMESPACE"
+echo "APP_DOMAIN: $APP_DOMAIN"
+echo "RELEASE_NAME: $RELEASE_NAME"
+echo "CLUSTER: $(kubectl config current-context)"
+echo "SERVER: $(kubectl config view --minify -o jsonpath='{.clusters[].cluster.server}')"
 
 # HELM
 echo "Starting deploy..."
@@ -29,16 +37,16 @@ echo "Starting deploy..."
 helm repo add "$HELM_REPO" "$HELM_REPO_URL"
 helm repo update
 
-helm_template_cmd="$(generate_helm_cmd)"
-echo "=============================================="
+helm_template_cmd="$(gen_helm_cmd)"
+group_start "--- 📄 Helm Template Command ---"
 printf "%b\n" "${helm_template_cmd// --/ \\ \\n  --}"
-echo "=============================================="
+group_end
 eval "$helm_template_cmd"
 
-helm_cmd="$(generate_helm_cmd upgrade)"
-echo "=============================================="
+helm_cmd="$(gen_helm_cmd upgrade)"
+group_start "--- 🚀 Helm Upgrade Command ---"
 printf "%b\n" "${helm_cmd// --/ \\ \\n  --}"
-echo "=============================================="
+group_end
 
 # shellcheck source=./eks-log-dumper.sh
 source "${ROOT_PATH}eks-log-dumper.sh"
