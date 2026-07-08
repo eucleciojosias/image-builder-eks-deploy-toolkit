@@ -15,6 +15,9 @@ setup() {
   export GITHUB_REF_NAME="staging"
   export AWS_ACCOUNT_ID="123456789012"
   export AWS_REGION="us-east-1"
+  unset PR_NUMBER
+  unset TAG
+  unset IMAGE
 
   rm -f /tmp/git_fake_params
   rm -f /tmp/aws_fake_params
@@ -157,6 +160,39 @@ test_build_creates_ecr_repo_when_missing() {
   "../scripts/build.sh" > /dev/null
 
   assert_ecr_params
+
+  rm Dockerfile
+}
+
+test_build_preview_app() {
+  export PR_NUMBER="42"
+
+  echo "FROM node:22" > Dockerfile
+
+  "../scripts/build.sh" > /dev/null
+
+  assert_git_params
+  assert_ecr_params
+  assert_docker_login_params
+
+  set_last_call_to_docker_params
+  assert_equals "build" "$(get_docker_param 0)"
+  assert_equals "--tag" "$(get_docker_param 2)"
+  assert_equals "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-repo:preview-42" "$(get_docker_param 3)"
+
+  rm Dockerfile
+}
+
+test_build_preview_app_takes_precedence_over_tag() {
+  export PR_NUMBER="42"
+  export TAG="my-custom-tag"
+
+  echo "FROM node:22" > Dockerfile
+
+  "../scripts/build.sh" > /dev/null
+
+  set_last_call_to_docker_params
+  assert_equals "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-repo:preview-42" "$(get_docker_param 3)"
 
   rm Dockerfile
 }
