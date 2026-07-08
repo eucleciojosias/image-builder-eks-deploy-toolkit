@@ -23,7 +23,7 @@ setup() {
   export HELM_REPO="my-charts"
   export HELM_REPO_URL="https://charts.example.com"
   export CHART="my-charts/app-chart"
-  export NAMESPACE="websites"
+  export NAMESPACE="apps"
   unset APP_DOMAIN
   unset HELM_FAKE_UPGRADE_FAIL
 
@@ -75,7 +75,7 @@ test_helm_deploy() {
   assert_equals "template" "$(get_helm_param 0)"
   assert_equals "my-repo-staging" "$(get_helm_param 1)"
   assert_equals "my-charts/app-chart" "$(get_helm_param 2)"
-  assert_equals "--namespace websites" "$(join_helm_params 3 4)"
+  assert_equals "--namespace apps" "$(join_helm_params 3 4)"
   assert_equals "--set siteCommit=11ccc333-111" "$(join_helm_params 5 6)"
   assert_equals "--set image.repository=123456789012.dkr.ecr.us-east-1.amazonaws.com/my-repo" "$(join_helm_params 7 8)"
   assert_equals "--set image.tag=staging" "$(join_helm_params 9 10)"
@@ -91,7 +91,7 @@ test_helm_deploy() {
   assert_equals "--debug" "$(get_helm_param 6)"
   assert_equals "--devel" "$(get_helm_param 7)"
   assert_equals "--timeout=5m" "$(get_helm_param 8)"
-  assert_equals "--namespace websites" "$(join_helm_params 9 10)"
+  assert_equals "--namespace apps" "$(join_helm_params 9 10)"
   assert_equals "--set siteCommit=11ccc333-111" "$(join_helm_params 11 12)"
   assert_equals "--set image.repository=123456789012.dkr.ecr.us-east-1.amazonaws.com/my-repo" "$(join_helm_params 13 14)"
   assert_equals "--set image.tag=staging" "$(join_helm_params 15 16)"
@@ -107,7 +107,7 @@ test_helm_deploy_with_custom_values_files() {
 
   set_last_call_to_helm_params
   assert_equals "upgrade" "$(get_helm_param 0)"
-  assert_equals "--namespace websites" "$(join_helm_params 9 10)"
+  assert_equals "--namespace apps" "$(join_helm_params 9 10)"
   assert_equals "--values ./chart/values.yaml" "$(join_helm_params 11 12)"
   assert_equals "--values ./chart/values-staging.yaml" "$(join_helm_params 13 14)"
   assert_equals "--set siteCommit=11ccc333-111" "$(join_helm_params 15 16)"
@@ -123,7 +123,7 @@ test_helm_deploy_skips_values_file_of_other_environment() {
 
   set_last_call_to_helm_params
   assert_equals "upgrade" "$(get_helm_param 0)"
-  assert_equals "--namespace websites" "$(join_helm_params 9 10)"
+  assert_equals "--namespace apps" "$(join_helm_params 9 10)"
   assert_equals "--set siteCommit=11ccc333-111" "$(join_helm_params 11 12)"
 
   rm -r chart
