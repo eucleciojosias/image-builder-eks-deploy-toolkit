@@ -1,4 +1,4 @@
-name: Cleanup Preview Apps
+name: 🧹 Cleanup Preview Apps
 
 on:
   workflow_dispatch:
@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   cleanup:
+    name: Cleanup Preview Apps
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
