@@ -10,7 +10,6 @@ README.md
 policies/
 tests/
 scripts/cleanup-preview-apps.sh
-build/
 
 # Local tooling
 .claude/

@@ -1,8 +1,9 @@
 # bash_unit test runner, downloaded locally/in CI by the Tests step in README
 bash_unit
 
-# Test artifacts left behind if a tests/test-helm.sh run is interrupted
+# Test artifacts left behind if a test run is interrupted
 tests/chart/
+tests/Dockerfile
 
 # OS cruft
 .DS_Store
