@@ -1,7 +1,18 @@
-README.md
-.gitignore
+# VCS/CI metadata — not needed in the build context
+.git/
 .github/
-dist/
+.gitignore
+
+# Docs
+README.md
+
+# Not copied into the image
 policies/
 tests/
 scripts/cleanup-preview-apps.sh
+
+# Local tooling
+.claude/
+
+# OS cruft
+.DS_Store

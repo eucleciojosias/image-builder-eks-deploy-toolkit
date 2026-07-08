@@ -10,6 +10,15 @@ Required variables: `CHART`, `NAMESPACE`, `AWS_REGION`, `CLUSTER_NAME`, `HELM_RE
 `HELM_REPO_URL`. Optional: `DEPLOYMENT_ENVIRONMENT`, `BASE_DOMAIN`, `APP_DOMAIN`,
 `AWS_ACCOUNT_ID`.
 
+## Layout
+
+- `scripts/` — deploy scripts (`helm.sh`, `shared-funcs.sh`, `eks-log-dumper.sh`,
+  `helm-values.sh`, `cleanup-preview-apps.sh`). The Docker image copies these flat into `/`,
+  so `helm.sh` runs as `/helm.sh` inside the container. `cleanup-preview-apps.sh` runs directly
+  from a checkout in the cleanup workflow and is never baked into the image.
+- `policies/` — `preview-apps-ecr-lifecycle-policy.json`, the ECR lifecycle policy applied to
+  preview app repositories by `cleanup-preview-apps.sh`.
+
 ## Tests
 
 ```sh
