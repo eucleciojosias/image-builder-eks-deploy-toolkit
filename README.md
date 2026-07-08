@@ -1,4 +1,4 @@
-# Image builder/EKS Helm Deploy
+# Image builder/EKS Helm Deploy Toolkit
 
 CI toolkit, packaged as a single Docker image, for building an app's Docker image and
 deploying it to an Amazon EKS cluster with Helm.
