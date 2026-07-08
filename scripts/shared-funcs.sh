@@ -50,3 +50,28 @@ gen_helm_cmd() {
 
   echo "$helm_cmd"
 }
+
+create_ecr_repo_if_not_exists() {
+  ecr_repo=${1:-${GITHUB_REPOSITORY##*/}}
+  retval=$(aws ecr describe-repositories --repository-names "${ecr_repo}" 2>&1 || true)
+  if [[ $retval == *"does not exist"* ]]; then
+    aws ecr create-repository --repository-name "${ecr_repo}"
+  fi
+}
+
+docker_login_ecr() {
+  aws ecr get-login-password --region "${AWS_REGION}" | docker login \
+    --username AWS --password-stdin "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+}
+
+get_image_name() {
+  image=${IMAGE:-${GITHUB_REPOSITORY##*/}}
+  tag=${TAG:-$GITHUB_REF_NAME}
+
+  if [[ -n "$PR_NUMBER" ]]; then
+    # Preview App
+    tag="preview-${PR_NUMBER}"
+  fi
+
+  echo "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${image}:${tag}"
+}

@@ -8,8 +8,8 @@ AWS_REGION=${AWS_REGION:?'AWS_REGION environment variable missing.'}
 
 git config --global --add safe.directory '*'
 
-# shellcheck source=./ecr.sh
-source "${ROOT_PATH}ecr.sh"
+# shellcheck source=./shared-funcs.sh
+source "${ROOT_PATH}shared-funcs.sh"
 
 create_ecr_repo_if_not_exists
 docker_login_ecr
