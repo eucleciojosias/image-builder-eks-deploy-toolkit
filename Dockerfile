@@ -18,7 +18,6 @@ RUN apt update
 
 RUN apt install -y helm docker-ce-cli
 
-# Always installs the current stable release, per https://kubernetes.io/releases/download/
 RUN curl -fsSL -o /usr/local/bin/kubectl "https://dl.k8s.io/release/$(curl -fsSL https://dl.k8s.io/release/stable.txt)/bin/linux/$(dpkg --print-architecture)/kubectl"
 RUN chmod +x /usr/local/bin/kubectl
 
@@ -32,14 +31,6 @@ RUN kubectl version --client
 RUN helm version
 RUN docker --version
 RUN git --version
-
-#############
-
-ARG HELM_REPO
-ARG HELM_REPO_URL
-
-ENV HELM_REPO=$HELM_REPO
-ENV HELM_REPO_URL=$HELM_REPO_URL
 
 WORKDIR /
 COPY ./scripts/*.sh /
