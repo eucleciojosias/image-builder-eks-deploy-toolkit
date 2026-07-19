@@ -12,3 +12,7 @@ All scripts are copied flat into `/` in the same image, so each runs as e.g. `do
 curl -s https://raw.githubusercontent.com/pgrange/bash_unit/master/install.sh | bash
 ./bash_unit tests/test-*
 ```
+
+## License
+
+[MIT](LICENSE)
